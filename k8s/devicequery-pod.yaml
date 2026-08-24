@@ -8,7 +8,7 @@ spec:
   restartPolicy: Never
   containers:
     - name: devicequery
-      image: ghcr.io/YOUR_GH_ORG_OR_USER/cuda-sample:devicequery-cuda12.5.0-ubuntu22.04
+      image: ghcr.io/baillielab/cuda-sample:devicequery-cuda12.5.0-ubuntu22.04
       resources:
         limits:
           nvidia.com/gpu: 1
