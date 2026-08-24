@@ -1,0 +1,32 @@
+name: Mirror NVIDIA cuda-sample image to GHCR
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "NGC tag to mirror (e.g. devicequery-cuda12.5.0-ubuntu22.04)"
+        required: true
+        default: "devicequery-cuda12.5.0-ubuntu22.04"
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install skopeo
+        run: sudo apt-get update && sudo apt-get install -y skopeo
+
+      - name: Mirror image from nvcr.io to ghcr.io
+        run: |
+          skopeo copy \
+            docker://nvcr.io/nvidia/k8s/cuda-sample:${{ github.event.inputs.tag }} \
+            docker://ghcr.io/${{ github.repository_owner }}/cuda-sample:${{ github.event.inputs.tag }}
